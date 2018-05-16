@@ -67,7 +67,8 @@ func credentialsCleanerFile(filePath string) ([]byte, error) {
 	return credentialsCleaner(file)
 }
 
-func credentialsCleanerBytes(file []byte) ([]byte, error) {
+//CredentialsCleanerBytes scrubs credentials from slice of bytes
+func CredentialsCleanerBytes(file []byte) ([]byte, error) {
 	r := bytes.NewReader(file)
 	return credentialsCleaner(r)
 }
