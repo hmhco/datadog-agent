@@ -19,6 +19,7 @@ import (
 	"github.com/DataDog/datadog-agent/pkg/autodiscovery/providers"
 	"github.com/DataDog/datadog-agent/pkg/collector"
 	"github.com/DataDog/datadog-agent/pkg/collector/check"
+	"github.com/DataDog/datadog-agent/pkg/encryptedsecret"
 	"github.com/DataDog/datadog-agent/pkg/status/health"
 )
 
@@ -312,12 +313,20 @@ func (ac *AutoConfig) resolve(config integration.Config) []integration.Config {
 
 		// each template can resolve to multiple configs
 		for _, config := range resolvedConfigs {
-			configs = append(configs, config)
+			if config, err := decryptConfig(config); err == nil {
+				configs = append(configs, config)
+			} else {
+				log.Errorf(err.Error())
+			}
 		}
 	} else {
-		configs = append(configs, config)
-		// store non template configs in the AC
-		ac.loadedConfigs = append(ac.loadedConfigs, config)
+		if config, err := decryptConfig(config); err == nil {
+			configs = append(configs, config)
+			// store non template configs in the AC
+			ac.loadedConfigs = append(ac.loadedConfigs, config)
+		} else {
+			log.Errorf(err.Error())
+		}
 	}
 
 	return configs
@@ -349,6 +358,38 @@ func (ac *AutoConfig) AddLoader(loader check.Loader) {
 	}
 
 	ac.loaders = append(ac.loaders, loader)
+}
+
+func decryptConfig(conf integration.Config) (integration.Config, error) {
+	var err error
+
+	// init_config
+	conf.InitConfig, err = encryptedsecret.Decrypt(conf.InitConfig)
+	if err != nil {
+		return conf, fmt.Errorf("Dropping conf for '%s', error while decrypting passwords in 'init_config': %s", conf.Name, err)
+	}
+
+	// instances
+	for idx := range conf.Instances {
+		conf.Instances[idx], err = encryptedsecret.Decrypt(conf.Instances[idx])
+		if err != nil {
+			return conf, fmt.Errorf("Dropping conf for '%s', error while decrypting passwords in an instances: %s", conf.Name, err)
+		}
+	}
+
+	// metrics
+	conf.MetricConfig, err = encryptedsecret.Decrypt(conf.MetricConfig)
+	if err != nil {
+		return conf, fmt.Errorf("Dropping conf for '%s', error while decrypting passwords in 'metrics': %s", conf.Name, err)
+	}
+
+	// logs
+	conf.LogsConfig, err = encryptedsecret.Decrypt(conf.LogsConfig)
+	if err != nil {
+		return conf, fmt.Errorf("Dropping conf for '%s', error while decrypting passwords 'logs': %s", conf.Name, err)
+	}
+
+	return conf, nil
 }
 
 // pollConfigs periodically calls Collect() on all the configuration
