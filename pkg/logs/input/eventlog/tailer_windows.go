@@ -14,6 +14,7 @@ package eventlog
 import "C"
 
 import (
+	"strconv"
 	"syscall"
 	"time"
 	"unsafe"
@@ -22,15 +23,14 @@ import (
 )
 
 type eventContext struct {
-	name  string
-	index int
+	identifier string
 	// outputChan chan message.Message
 }
 
 // Start starts tailing the event log from a given offset.
-func (t *Tailer) Start(_ string) {
+func (t *Tailer) Start(bookmark string) {
 	log.Info("Starting event log tailing for channel ", t.config.ChannelPath, " query ", t.config.Query)
-	go t.tail()
+	go t.tail(bookmark)
 }
 
 // Stop stops the tailer
@@ -40,19 +40,29 @@ func (t *Tailer) Stop() {
 	<-t.done
 }
 
-func (t *Tailer) tail() {
-	id := t.Identifier()
-	log.Info("IDENTIFIER: ", id) // FIXME
+func (t *Tailer) tail(bookmark string) {
+	var bookmarkParam = 0
+	var flag = EvtSubscribeStartAtOldestRecord
+	// var flag = EvtSubscribeStartAfterBookmark
+	var err error
+	if bookmark != "" {
+		bookmarkParam, err = strconv.Atoi(bookmark)
+		if err != nil {
+			log.Warn("Couldn't recover bookmark ", bookmark, ", tailing from end")
+			flag = EvtSubscribeStartAtOldestRecord
+			// flag = EvtSubscribeToFutureEvents
+		}
+	}
 	ctx := eventContext{
-		name:  "FIXME",
-		index: 0,
+		identifier: "myid",
+		// identifier: t.Identifier(),
 		// outputChan: t.outputChan,
 	}
 	C.startEventSubscribe(
 		C.CString(t.config.ChannelPath),
 		C.CString(t.config.Query),
-		C.ULONGLONG(0),
-		C.int(EvtSubscribeStartAtOldestRecord),
+		C.ULONGLONG(bookmarkParam),
+		C.int(flag),
 		C.PVOID(uintptr(unsafe.Pointer(&ctx))),
 	)
 
@@ -84,7 +94,7 @@ func goNotificationCallback(handle C.ULONGLONG, ctx C.PVOID) {
 	time.Sleep(1000 * time.Millisecond)
 	var goctx eventContext
 	goctx = *(*eventContext)(unsafe.Pointer(uintptr(ctx)))
-	log.Info("Callback from ", goctx.name, " with index ", goctx.index)
+	log.Info("Callback from ", goctx.identifier)
 
 	xml, err := EvtRender(handle)
 	if err == nil {
