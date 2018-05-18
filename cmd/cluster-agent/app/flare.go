@@ -9,7 +9,7 @@ import (
 	"bytes"
 	"fmt"
 
-	log "github.com/cihub/seelog"
+	"github.com/DataDog/datadog-agent/pkg/util/log"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 

@@ -24,8 +24,8 @@ import (
 	"github.com/DataDog/datadog-agent/pkg/status"
 	"github.com/DataDog/datadog-agent/pkg/status/health"
 	"github.com/DataDog/datadog-agent/pkg/util"
+	"github.com/DataDog/datadog-agent/pkg/util/log"
 
-	log "github.com/cihub/seelog"
 	"github.com/mholt/archiver"
 	yaml "gopkg.in/yaml.v2"
 )
@@ -155,7 +155,7 @@ func zipStatusFile(tempDir, hostname string) error {
 	}
 
 	// Clean it up
-	cleaned, err := credentialsCleanerBytes(s)
+	cleaned, err := log.CredentialsCleanerBytes(s)
 	if err != nil {
 		return err
 	}
@@ -212,7 +212,7 @@ func zipExpVar(tempDir, hostname string) error {
 			return err
 		}
 
-		cleanedYAML, err := credentialsCleanerBytes(yamlValue)
+		cleanedYAML, err := log.CredentialsCleanerBytes(yamlValue)
 		if err != nil {
 			return err
 		}
@@ -239,7 +239,7 @@ func zipConfigFiles(tempDir, hostname string, confSearchPaths SearchPaths) error
 		return err
 	}
 	// zip up the actual config
-	cleaned, err := credentialsCleanerBytes(c)
+	cleaned, err := log.CredentialsCleanerBytes(c)
 	if err != nil {
 		return err
 	}
@@ -268,7 +268,7 @@ func zipConfigFiles(tempDir, hostname string, confSearchPaths SearchPaths) error
 		// Check if the file exists
 		_, err := os.Stat(filePath)
 		if err == nil {
-			cleaned, err = credentialsCleanerFile(filePath)
+			cleaned, err = log.CredentialsCleanerFile(filePath)
 			if err != nil {
 				return err
 			}
@@ -326,7 +326,7 @@ func zipConfigCheck(tempDir, hostname string) error {
 		return err
 	}
 
-	data, err := credentialsCleanerBytes(b.Bytes())
+	data, err := log.CredentialsCleanerBytes(b.Bytes())
 	if err != nil {
 		return err
 	}
@@ -379,7 +379,7 @@ func walkConfigFilePaths(tempDir, hostname string, confSearchPaths SearchPaths) 
 			}
 
 			if getFirstSuffix(f.Name()) == ".yaml" || filepath.Ext(f.Name()) == ".yaml" {
-				cleaned, err := credentialsCleanerFile(src)
+				cleaned, err := log.CredentialsCleanerFile(src)
 				if err != nil {
 					return err
 				}

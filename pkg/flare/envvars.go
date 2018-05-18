@@ -11,6 +11,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/DataDog/datadog-agent/pkg/util/log"
 )
 
 var envvarPrefixWhitelist = []string{
@@ -60,7 +62,7 @@ func zipEnvvars(tempDir, hostname string) error {
 	}
 
 	// Clean it up
-	cleaned, err := credentialsCleanerBytes(b.Bytes())
+	cleaned, err := log.CredentialsCleanerBytes(b.Bytes())
 	if err != nil {
 		return err
 	}

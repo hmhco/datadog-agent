@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	log "github.com/cihub/seelog"
+	"github.com/DataDog/datadog-agent/pkg/util/log"
 	"github.com/spf13/cobra"
 
 	"github.com/DataDog/datadog-agent/pkg/api/util"

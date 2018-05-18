@@ -12,11 +12,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	log "github.com/cihub/seelog"
-
 	"gopkg.in/yaml.v2"
 
 	"github.com/DataDog/datadog-agent/pkg/autodiscovery/integration"
+	"github.com/DataDog/datadog-agent/pkg/util/log"
 )
 
 type configFormat struct {
@@ -191,7 +190,7 @@ func (c *FileConfigProvider) collectEntry(file os.FileInfo, path string, checkNa
 	}
 
 	delete(c.Errors, checkName) // noop if entry is nonexistant
-	log.Debug("Found valid configuration in file:", absPath)
+	log.Debug("Found valid configuration in file: ", absPath)
 	return entry
 }
 

@@ -16,6 +16,7 @@ import (
 	"regexp"
 
 	"github.com/DataDog/datadog-agent/pkg/util/docker"
+	"github.com/DataDog/datadog-agent/pkg/util/log"
 )
 
 func zipDockerSelfInspect(tempDir, hostname string) error {
@@ -39,7 +40,7 @@ func zipDockerSelfInspect(tempDir, hostname string) error {
 	serialized := out.Bytes()
 
 	// Clean it up
-	cleaned, err := credentialsCleanerBytes(serialized)
+	cleaned, err := log.CredentialsCleanerBytes(serialized)
 	if err != nil {
 		return err
 	}
