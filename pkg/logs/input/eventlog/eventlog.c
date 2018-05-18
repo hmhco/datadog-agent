@@ -37,7 +37,7 @@ ULONGLONG startEventSubscribe(char *channel, char* query, ULONGLONG ulBookmark, 
 	// Subscribe to events beginning with the oldest event in the channel. The subscription
 	// will return all current events in the channel and any future events that are raised
 	// while the application is active.
-	hSubscription = EvtSubscribe(NULL, NULL, pwsChannel, pwsQuery, NULL, ctx,
+	hSubscription = EvtSubscribe(NULL, NULL, pwsChannel, pwsQuery, hBookmark, ctx,
 		(EVT_SUBSCRIBE_CALLBACK)SubscriptionCallback, flags);
 	if (NULL == hSubscription)
 	{
