@@ -195,7 +195,7 @@ func TestSNMPConfig(t *testing.T) {
 }
 
 func assertClean(t *testing.T, contents, cleanContents string) {
-	cleaned, err := credentialsCleanerBytes([]byte(contents))
+	cleaned, err := CredentialsCleanerBytes([]byte(contents))
 	assert.Nil(t, err)
 	cleanedString := string(cleaned)
 
@@ -228,7 +228,7 @@ log_level: info
 
 	wd, _ := os.Getwd()
 	filePath := filepath.Join(wd, "test", "datadog.yaml")
-	cleaned, err := credentialsCleanerFile(filePath)
+	cleaned, err := CredentialsCleanerFile(filePath)
 	assert.Nil(t, err)
 	cleanedString := string(cleaned)
 
