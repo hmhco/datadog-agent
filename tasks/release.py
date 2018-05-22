@@ -34,11 +34,11 @@ def update_changelog(ctx, new_version):
 
     # adding the Prelude
     ctx.run("""echo 'prelude: >
-    - Please refer to the `{0} tag on integrations-core <https://github.com/DataDog/integrations-core/releases/tag/{0}>` for the list of changes on the Core Checks.
+    - Please refer to the `{0} tag on integrations-core <https://github.com/DataDog/integrations-core/releases/tag/{0}>`_ for the list of changes on the Core Checks.
 
-    - Please refer to the `{0} tag on trace-agent <https://github.com/DataDog/datadog-trace-agent/releases/tag/{0}>` for the list of changes on the Trace Agent.
+    - Please refer to the `{0} tag on trace-agent <https://github.com/DataDog/datadog-trace-agent/releases/tag/{0}>`_ for the list of changes on the Trace Agent.
 
-    - Please refer to the `{0} tag on process-agent <https://github.com/DataDog/datadog-process-agent/releases/tag/{0}>` for the list of changes on the Process Agent.'\
+    - Please refer to the `{0} tag on process-agent <https://github.com/DataDog/datadog-process-agent/releases/tag/{0}>`_ for the list of changes on the Process Agent.'\
     | EDITOR=tee reno new prelude-release-{0} --edit""".format(new_version))
 
     # make sure we are up to date
