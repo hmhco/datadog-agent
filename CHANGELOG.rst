@@ -2,6 +2,46 @@
 Release Notes
 =============
 
+.. _Release Notes_6.3.0:
+
+6.3.0
+=====
+
+.. _Release Notes_6.3.0_Prelude:
+
+Prelude
+-------
+
+- Please refer to the `6.2.0 tag on integrations-core <https://github.com/DataDog/integrations-core/releases/tag/6.2.0>` for the list of changes on the Core Checks.
+- Please refer to the `6.2.0 tag on trace-agent <https://github.com/DataDog/datadog-trace-agent/releases/tag/6.2.0>` for the list of changes on the Trace Agent.
+- Please refer to the `6.2.0 tag on process-agent <https://github.com/DataDog/datadog-process-agent/releases/tag/6.2.0>` for the list of changes on the Process Agent.
+
+
+- Please refer to the `6.3.0 tag on integrations-core <https://github.com/DataDog/integrations-core/releases/tag/6.3.0>` for the list of changes on the Core Checks. - Please refer to the `6.3.0 tag on trace-agent <https://github.com/DataDog/datadog-trace-agent/releases/tag/6.3.0>` for the list of changes on the Trace Agent. - Please refer to the `6.3.0 tag on process-agent <https://github.com/DataDog/datadog-process-agent/releases/tag/6.3.0>` for the list of changes on the Process Agent.
+
+
+.. _Release Notes_6.3.0_New Features:
+
+New Features
+------------
+
+- Add docker memory soft limit metric.
+
+- Add docker & swarm information to host metadata
+
+- Created a new journald integration to collect logs from systemd. It's only available on debian distributions for now.
+
+- The fowarder will now spaw specific workers per domain to avoid slow down when one domain is down.
+
+
+.. _Release Notes_6.3.0_Upgrade Notes:
+
+Upgrade Notes
+-------------
+
+- Moves away from the community library for the kubernetes client in favor of the official one.
+
+
 6.2.0
 =====
 2018-05-11
