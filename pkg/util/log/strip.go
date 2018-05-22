@@ -79,6 +79,7 @@ func credentialsCleaner(file io.Reader) ([]byte, error) {
 
 	scanner := bufio.NewScanner(file)
 
+	first := true
 	for scanner.Scan() {
 		b := scanner.Bytes()
 		if !commentRegex.Match(b) && !blankRegex.Match(b) && string(b) != "" {
@@ -89,7 +90,12 @@ func credentialsCleaner(file io.Reader) ([]byte, error) {
 					b = repl.regex.ReplaceAll(b, repl.repl)
 				}
 			}
-			finalFile += string(b) + "\n"
+			if !first {
+				finalFile += "\n"
+			}
+
+			finalFile += string(b)
+			first = false
 		}
 	}
 
