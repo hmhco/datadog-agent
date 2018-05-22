@@ -40,7 +40,6 @@ def update_changelog(ctx, new_version):
 
     - Please refer to the `{0} tag on process-agent <https://github.com/DataDog/datadog-process-agent/releases/tag/{0}>` for the list of changes on the Process Agent.'\
     | EDITOR=tee reno new prelude-release-{0} --edit""".format(new_version))
-    return
 
     # make sure we are up to date
     ctx.run("git fetch")
