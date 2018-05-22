@@ -8,6 +8,7 @@
 package collectors
 
 import (
+	"fmt"
 	"strings"
 
 	log "github.com/cihub/seelog"
@@ -102,6 +103,12 @@ func dockerExtractEnvironmentVariables(tags *utils.TagList, containerEnvVariable
 		case "MESOS_TASK_ID":
 			tags.AddHigh("mesos_task", envValue)
 
+		// Apache Aurora Scheduler
+		case "MESOS_EXECUTOR_ID":
+			for k, v := range dockerExtractAuroraTagsFromExecId(envValue) {
+				tags.AddHigh(fmt.Sprintf("aurora.docker.%s", k), v)
+			}
+
 		// Nomad
 		case "NOMAD_TASK_NAME":
 			tags.AddLow("nomad_task", envValue)
@@ -116,4 +123,30 @@ func dockerExtractEnvironmentVariables(tags *utils.TagList, containerEnvVariable
 			}
 		}
 	}
+}
+
+// dockerExtractAuroraTagsFromExecId contain parsed Apache Aurora Scheduler tags from:
+// Mesos set MESOS_EXECUTOR_ID environment variable
+func dockerExtractAuroraTagsFromExecId(execId string) (auroraTags map[string]string) {
+
+	// Regex expression to parse MESOS_EXECUTOR_ID env var in to usable tags
+	var exp = `(?P<executor>^[a-zA-Z0-9]+)-` +
+		`(?P<role>[a-zA-Z0-9_\-]+)-` +
+		`(?P<stage>devel|staging[0-9]+|prod)-` +
+		`(?P<job>[a-zA-Z0-9_\-]+)-` +
+		`(?P<instance>[0-9]+)-` +
+		`(?P<id>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$)`
+
+	auroraTags = utils.RegexGroupsToMap(exp, execId)
+
+	// Confirm complete regex match for all keys before setting tags (empty map if fail)
+	var auroraKeys = [6]string{"executor", "role", "stage", "job", "instance", "id"}
+
+	for _, key := range auroraKeys {
+		if _, present := auroraTags[string(key)]; !present {
+			auroraTags = map[string]string{}
+		}
+	}
+
+	return auroraTags
 }
