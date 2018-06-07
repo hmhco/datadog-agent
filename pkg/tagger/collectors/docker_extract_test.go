@@ -102,6 +102,43 @@ func TestDockerRecordsFromInspect(t *testing.T) {
 			expectedHigh: []string{"mesos_task:system_dd-agent.dcc75b42-4b87-11e7-9a62-70b3d5800001"},
 		},
 		{
+			testName: "extractAuroraSchedulerAuroraJob",
+			co: &types.ContainerJSON{
+				Config: &container.Config{
+					Env: []string{
+						"MESOS_EXECUTOR_ID=thermos-test-role-devel-ddagent-0-f5a5ba97-115e-4119-a677-224aca32bcb7",
+					},
+					Labels: map[string]string{},
+				},
+			},
+			toRecordEnvAsTags:    map[string]string{},
+			toRecordLabelsAsTags: map[string]string{},
+			expectedLow:          []string{},
+			expectedHigh: []string{
+				"aurora.docker.executor:thermos",
+				"aurora.docker.role:test-role",
+				"aurora.docker.stage:devel",
+				"aurora.docker.job:ddagent",
+				"aurora.docker.instance:0",
+				"aurora.docker.id:f5a5ba97-115e-4119-a677-224aca32bcb7",
+			},
+		},
+		{
+			testName: "extractAuroraSchedulerNonAuroraJob",
+			co: &types.ContainerJSON{
+				Config: &container.Config{
+					Env: []string{
+						"MESOS_EXECUTOR_ID=system_dd-agent.dcc75b42-4b87-11e7-9a62-70b3d5800001",
+					},
+					Labels: map[string]string{},
+				},
+			},
+			toRecordEnvAsTags:    map[string]string{},
+			toRecordLabelsAsTags: map[string]string{},
+			expectedLow:          []string{},
+			expectedHigh: 		  []string{},
+		},
+		{
 			testName: "NoValue",
 			co: &types.ContainerJSON{
 				Config: &container.Config{
