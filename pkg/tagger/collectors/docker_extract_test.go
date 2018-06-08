@@ -121,6 +121,7 @@ func TestDockerRecordsFromInspect(t *testing.T) {
 				"aurora.docker.job:ddagent",
 				"aurora.docker.instance:0",
 				"aurora.docker.id:f5a5ba97-115e-4119-a677-224aca32bcb7",
+				"aurora.docker.task:thermos-test-role-devel-ddagent-0-f5a5ba97-115e-4119-a677-224aca32bcb7",
 			},
 		},
 		{

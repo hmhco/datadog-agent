@@ -139,8 +139,11 @@ func dockerExtractAuroraTagsFromExecId(execId string) (auroraTags map[string]str
 
 	auroraTags = utils.RegexGroupsToMap(exp, execId)
 
+	// Add full MESOS_EXECUTOR_ID value as Aurora task tag
+	auroraTags["task"] = execId
+
 	// Confirm complete regex match for all keys before setting tags (empty map if fail)
-	var auroraKeys = [6]string{"executor", "role", "stage", "job", "instance", "id"}
+	var auroraKeys = [7]string{"executor", "role", "stage", "job", "instance", "id", "task"}
 
 	for _, key := range auroraKeys {
 		if _, present := auroraTags[string(key)]; !present {
