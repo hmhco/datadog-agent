@@ -113,8 +113,7 @@ func TestDockerRecordsFromInspect(t *testing.T) {
 			},
 			toRecordEnvAsTags:    map[string]string{},
 			toRecordLabelsAsTags: map[string]string{},
-			expectedLow:          []string{},
-			expectedHigh: []string{
+			expectedLow: []string{
 				"aurora.docker.executor:thermos",
 				"aurora.docker.role:test-role",
 				"aurora.docker.stage:devel",
@@ -123,6 +122,7 @@ func TestDockerRecordsFromInspect(t *testing.T) {
 				"aurora.docker.id:f5a5ba97-115e-4119-a677-224aca32bcb7",
 				"aurora.docker.task:thermos-test-role-devel-ddagent-0-f5a5ba97-115e-4119-a677-224aca32bcb7",
 			},
+			expectedHigh: []string{},
 		},
 		{
 			testName: "extractAuroraSchedulerNonAuroraJob",
@@ -137,7 +137,7 @@ func TestDockerRecordsFromInspect(t *testing.T) {
 			toRecordEnvAsTags:    map[string]string{},
 			toRecordLabelsAsTags: map[string]string{},
 			expectedLow:          []string{},
-			expectedHigh: 		  []string{},
+			expectedHigh:         []string{},
 		},
 		{
 			testName: "NoValue",
