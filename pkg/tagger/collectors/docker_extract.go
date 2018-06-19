@@ -106,7 +106,7 @@ func dockerExtractEnvironmentVariables(tags *utils.TagList, containerEnvVariable
 		// Apache Aurora Scheduler
 		case "MESOS_EXECUTOR_ID":
 			for k, v := range dockerExtractAuroraTagsFromExecId(envValue) {
-				tags.AddHigh(fmt.Sprintf("aurora.docker.%s", k), v)
+				tags.AddLow(fmt.Sprintf("aurora.docker.%s", k), v)
 			}
 
 		// Nomad
